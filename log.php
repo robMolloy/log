@@ -1,6 +1,6 @@
 <?php
 
-function showAllLogEntries(){
+function getAllLogEntries(){
     $contents = trim(file_get_contents('/var/log/apache2/error.log'));
     //~ $contents = file_get_contents('/var/log/apache2/error.log');
     $array = explode("\n",$contents);
@@ -18,15 +18,15 @@ function trigger_notice($notice){
 }
 
 $nav = (isset($_REQUEST['nav']) ? $_REQUEST['nav'] : '');
-trigger_notice('gfy');
+//~ trigger_notice('gfy');
 switch($nav){
     case 'clearLog':
         exec('echo "">/var/log/apache2/error.log');
         echo True;
     break;
     
-    case 'showAllLogEntries':
-        echo json_encode(showAllLogEntries());
+    case 'getAllLogEntries':
+        echo json_encode(getAllLogEntries());
     break;
     
     case 'restartApache':
@@ -50,7 +50,7 @@ switch($nav){
     a       {text-decoration:none;}
     
     .wrapperMain {
-        min-width:45%;max-width:1100px;text-align:center;overflow-wrap:break-word;
+        min-width:45%;max-width:850px;text-align:center;overflow-wrap:break-word;
         /*.singleColumn*/
         display:inline-grid;grid-template-columns:repeat(1,auto);grid-row-gap:20px;
     }
@@ -170,6 +170,12 @@ switch($nav){
         let allLogEntries = [];
         let selectedEntries = [];
         
+        function initArrays(){
+            hideLogEntries = [];
+            allLogEntries = [];
+            selectedEntries = [];
+        }
+        
         function ajax(params={}) {
             let file = ('file' in params ? params.file : ''); //~ !essential parameter!
             let f = ('f' in params ? params.f : new FormData());
@@ -190,7 +196,6 @@ switch($nav){
                 request.send(f);
             });
         }
-        
         
         function getAllSelected(){
             return document.getElementById('list').querySelectorAll('.select');
@@ -242,20 +247,32 @@ switch($nav){
             }
         }
         
+        async function getAllLogEntries(){
+            let response = await ajax({'file':'?nav=getAllLogEntries'});
+            return JSON.parse(response);
+        }
+        
         async function showAllLogEntries(descending=true){
-            let list = document.getElementById('list');
-            let response = await ajax({'file':'?nav=showAllLogEntries'});
-            let json = JSON.parse(response);
+            //let list = document.getElementById('list');
+            //let response = await ajax({'file':'?nav=showAllLogEntries'});
             
+            let json = await getAllLogEntries();
+            let logLength = json.length;
+            let list = document.getElementById('list');
             allLogEntries = Object.keys(json);
             
             list.innerHTML='';
             position = descending ? 'afterbegin' : 'beforeend';
-            json.forEach((value,key)=>{
-                if(!hideLogEntries.includes(key)){
-                    list.insertAdjacentHTML(position,`<div id="logEntry_${key}" onclick="toggleSelect(this);" ${selectedEntries.includes(key) ? `class="select"` : ``}>${value}</div>`);
-                }   
-            });
+            if(logLength>0){
+                json.forEach((value,key)=>{
+                    if(!hideLogEntries.includes(key)){
+                        list.insertAdjacentHTML(position,`<div id="logEntry_${key}" onclick="toggleSelect(this);" ${selectedEntries.includes(key) ? `class="select"` : ``}>${value}</div>`);
+                    }   
+                });
+            } else {
+                hideLogEntries = [];
+                selectedEntries = [];
+            }
         }
         
         async function restartApache(){
