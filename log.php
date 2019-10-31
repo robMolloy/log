@@ -18,7 +18,7 @@ function trigger_notice($notice){
 }
 
 $nav = (isset($_REQUEST['nav']) ? $_REQUEST['nav'] : '');
-//~ trigger_notice('gfy');
+trigger_notice('gfy');
 switch($nav){
     case 'clearLog':
         exec('echo "">/var/log/apache2/error.log');
@@ -338,7 +338,7 @@ switch($nav){
                         <h1 onclick="toggleSelectAll()">Error log</h1>
                         <div class="sliderContainer" style="">
                             <h2>O</h2>
-                            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                            <label class="switch"><input type="checkbox" checked="checked"><span class="slider"></span></label>
                             <h2>I</h2>
                         </div>
                     </div>
