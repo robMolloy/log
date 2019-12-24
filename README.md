@@ -3,7 +3,8 @@
 Data from error.log is passed in json format and then javascript renders it on the page.
 
 To set up:
--Store in the server source folder of 192.168.0.(**)/log.php.
+
+-Store in the server source folder of 192.168.0.(11)/log.php.
 -If you're getting the error, 'fail to openstream' you may need to change permissions on the folder that stores error.log. Try "sudo chmod -R 777 /var/log/apache2".
 -Double check that your error log is in '/var/log/apache2/error.log' and change the $file variable in getAllLogEntries function if it's not.
 
