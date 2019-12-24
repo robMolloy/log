@@ -2,7 +2,8 @@
 
 function getAllLogEntries(){
     //~ if file_get_contents 'fail to openstream' error try "sudo chmod -R 777 /var/log/apache2"
-    $contents = trim(file_get_contents('/var/log/apache2/error.log'));
+    $file = '/var/log/apache2/error.log';
+    $contents = trim(file_get_contents($file));
     $array = explode("\n",$contents);
     $r_array = array_reverse($array);
     return $array==[''] ? [] : $array;
