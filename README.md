@@ -5,7 +5,9 @@ Data from error.log is passed in json format and then javascript renders it on t
 To set up:
 
 -Store in the server source folder of 192.168.0.(11)/log.php.
+
 -If you're getting the error, 'fail to openstream' you may need to change permissions on the folder that stores error.log. Try "sudo chmod -R 777 /var/log/apache2".
+
 -Double check that your error log is in '/var/log/apache2/error.log' and change the $file variable in getAllLogEntries function if it's not.
 
 There is a function called trigger_notice. It isn't used in this file but I use it instead of trigger_error, and it will format the error when displayed on this log (log.php).
